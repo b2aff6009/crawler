@@ -1,0 +1,10 @@
+[
+    "./tests/testdata/test1.csv",
+    "./tests/testdata/test4.csv",
+    "./tests/testdata/test2.csv",
+    "./tests/testdata/test3.csv",
+    "./tests/testdata/memo.json",
+    "./tests/testdata/test1.xml",
+    "./tests/testdata/test2.xml",
+    "./tests/testdata/test5.csv"
+]
