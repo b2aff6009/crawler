@@ -22,12 +22,22 @@ baseSettings = {
 def test_createLocalCrawler():
     settings = baseSettings
     getClassString = lambda x: "<class \'crawler.{}\'>".format(x)
+    
     tests = [
         ["local", "localCrawler"],
         ["google", "googleCrawler"],
         ["git", "gitCrawler"]
     ]
+    tests = [
+        ["local", crawler.localCrawler],
+        ["google", crawler.googleCrawler],
+        ["git", crawler.gitCrawler]
+    ]
     for test in tests:
         settings["type"] = test[0]
         myCrawler = crawler.createCrawler(settings)
-        assert str(myCrawler.__class__) == getClassString(test[1]), "Wrong crawler type was created. Created crawler was: {}".format(type(myCrawler))
+        testCrawler = test[1](settings)
+        assert type(myCrawler) ==  type(testCrawler),"Wrong crawler type was created. Created crawler was: {}".format(type(myCrawler))
+
+if __name__ == "__main__":
+    test_createLocalCrawler()
