@@ -13,11 +13,12 @@ baseSettings = {
     "type": "local",
     "memo" : "./tests/testdata/memo.json",
     "onlyOnce" : True,
+    "path" : "./tests/testdata/",
+    "extension" : ""
     }
 
 def test_createCrawlerFactory():
     settings = baseSettings
-    getClassString = lambda x: "<class \'crawler.{}\'>".format(x)
     
     tests = [
         ["local", crawler.localCrawler],

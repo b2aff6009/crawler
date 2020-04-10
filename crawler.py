@@ -2,13 +2,13 @@ import os
 import json
 
 
-def createCrawler(settings):
+def createCrawler(settings, callback = None):
     selector = {
         "local" : localCrawler,
         "google" : googleCrawler,
         "git" : gitCrawler
     }
-    return selector[settings.get("type", "local")](settings)
+    return selector[settings.get("type", "local")](settings, callback)
 
 class Crawler:
     def __init__(self, settings, callback = None):
@@ -19,7 +19,7 @@ class Crawler:
     def generator(self):
         pass
 
-    def list(self):
+    def getList(self):
         if(self.settings["onlyOnce"] == True):
             return list(self.generator())
         raise ValueError("onlyOnce option is disabled and would lead to an infinity list")
@@ -39,8 +39,8 @@ class Crawler:
         pass
 
 class localCrawler(Crawler):
-    def __init__(self, settings):
-        super().__init__(settings)
+    def __init__(self, settings, callback = None):
+        super().__init__(settings, callback)
 
     def generator(self):
         for subdir, dirs, files in os.walk(self.settings["path"]):
@@ -54,12 +54,17 @@ class localCrawler(Crawler):
                         yield filepath
 
     def process(self):
+        if self.settings["singleReturn"] == True:
+            for file in self.generator():
+                self.callback(file)
+        else:
+            self.callback(self.getList())
         pass
 
 class googleCrawler(Crawler):
-    def __init__(self, settings):
+    def __init__(self, settings, callback = None):
         super().__init__(settings)
 
 class gitCrawler(Crawler):
-    def __init__(self, settings):
+    def __init__(self, settings, callback = None):
         super().__init__(settings)
