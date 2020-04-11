@@ -13,8 +13,11 @@ baseSettings = {
     "type": "local",
     "memo" : "./tests/testdata/memo.json",
     "onlyOnce" : True,
+    #LocalCrawler Settings
     "path" : "./tests/testdata/",
-    "extension" : ""
+    "extension" : "",
+    #GoogleCrawler Settings
+    "credentialPath" : "./dummy-credentials.json",
     }
 
 def test_createCrawlerFactory():
@@ -51,4 +54,4 @@ def test_load():
 
 
 if __name__ == "__main__":
-    test_load()
+    test_createCrawlerFactory()

@@ -2,3 +2,5 @@ __pycache__
 *.code-workspace
 .vscode
 .pytest_cache
+client_secret.json
+dummy-credentials.json
