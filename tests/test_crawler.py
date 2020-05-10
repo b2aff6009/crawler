@@ -52,6 +52,24 @@ def test_load():
     assert len(mCrawler.memo) == 1, "Crawler memo contains not exactly one item"
     assert mCrawler.memo[0] == dummyName, "Crawlers memo contains {} instead of {}".format(mCrawler.memo[0], dummyName) 
 
+def test_service():
+    settings = baseSettings
+    settings["service"] = True
+    settings["sleep"] = 1
+    settings["onlyOnce"] = True
+    cnt = 0
+    mId = 3
+
+    def callback(file, id):
+        cnt = cnt + 1
+        assert id == mId, "Argurments doesn't match the expected. Got {} instead of {}".format(id, mId)
+
+    mCrawler = crawler.createCrawler(settings, callback)
+    mCrawler.process(mId)
+
+        
+
 
 if __name__ == "__main__":
-    test_createCrawlerFactory()
+    #test_createCrawlerFactory()
+    test_service()

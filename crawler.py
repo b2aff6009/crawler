@@ -1,5 +1,6 @@
 import os
 import json
+import time
 
 
 def createCrawler(settings, callback = None):
@@ -26,8 +27,13 @@ class Crawler:
 
     def loadMemo(self):
         if self.settings["onlyOnce"] == True:
-           with open(self.settings["memo"], 'rb') as f:
-               self.memo = json.load(f) 
+            if os.path.isfile(self.settings["memo"]) == False:
+                self.memo = []
+                with open(self.settings["memo"], 'w+') as f:
+                    json.dump(self.memo, f, indent = 4)
+
+            with open(self.settings["memo"], 'rb') as f:
+                self.memo = json.load(f) 
         else:
             self.memo = []
 
@@ -35,14 +41,18 @@ class Crawler:
         with open(self.settings["memo"], 'w') as f:
             json.dump(self.memo, f, indent = 4)
 
-    def process(self):
+    def process(self, *args):
         if self.callback == None:
             raise ValueError("Callback function is not defined, which is needed to the process call. You might want to use generator() instead.")
-        if self.settings["singleReturn"] == True:
-            for file in self.generator():
-                self.callback(file)
-        else:
-            self.callback(self.getList())
+        firstRun = True
+        while self.settings.get("service", False) or firstRun:
+            firstRun = False
+            if self.settings.get("singleReturn",False) == True:
+                for file in self.generator():
+                    self.callback(file, *args)
+            else:
+                self.callback(self.getList(), *args)
+            time.sleep(self.settings.get("sleep", 1))
 
 class localCrawler(Crawler):
     def __init__(self, settings, callback = None):
@@ -54,7 +64,6 @@ class localCrawler(Crawler):
                 if (filename.endswith(self.settings["extension"])):
                     filepath = os.path.join(subdir, filename)
                     if (self.settings["onlyOnce"] == False or filepath not in self.memo):
-                        #result.append([os.path.join(subdir, filename), filename.replace(self.settings["extension"],""), subdir.split("/")[-1]])
                         self.memo.append(filepath)
                         self.save()
                         yield filepath
@@ -91,7 +100,6 @@ class googleCrawler(Crawler):
 
     def search(self):
         sheets = self.client.openall()
-        #self.reader = googleApi.GoogleSheetApi(self.settings.get("googleApi"))
         self.reader.setFile(self.settings.get("path"))
         self.sheets = self.reader.getSheets()
         result = []
