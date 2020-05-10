@@ -1,4 +1,5 @@
 # crawler
+![tests](https://github.com/b2aff6009/crawler/workflows/tests/badge.svg?branch=master)
 
 ## Settings
 
