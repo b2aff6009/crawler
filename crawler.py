@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import sys
 
 
 def createCrawler(settings, callback = None):
@@ -47,12 +48,16 @@ class Crawler:
         firstRun = True
         while self.settings.get("service", False) or firstRun:
             firstRun = False
-            if self.settings.get("singleReturn",False) == True:
-                for file in self.generator():
-                    self.callback(file, *args)
-            else:
-                self.callback(self.getList(), *args)
-            time.sleep(self.settings.get("sleep", 1))
+            try:
+                if self.settings.get("singleReturn",False) == True:
+                    for file in self.generator():
+                        self.callback(file, *args)
+                else:
+                    self.callback(self.getList(), *args)
+                time.sleep(self.settings.get("sleep", 1))
+            except:
+                print("Oops!", sys.exc_info()[0], "occured.")
+                time.sleep(self.settings.get("sleep", 1)*10)
 
 class localCrawler(Crawler):
     def __init__(self, settings, callback = None):
