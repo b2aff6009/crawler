@@ -85,7 +85,7 @@ class localCrawler(Crawler):
             for filename in files:
                 if self.debug > 5:
                     print("Crawler: Test file {}".format(filename))
-                if (filename.endswith(self.settings["extension"])):
+                if (filename.lower().endswith(self.settings["extension"].lower())):
                     filepath = os.path.join(subdir, filename)
                     if self.debug > 4:
                         print("Crawler: found file {}".format(filepath))
